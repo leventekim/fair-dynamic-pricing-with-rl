@@ -14,7 +14,7 @@ class FMCGEnv(gym.Env):
         max_demand: int,
         n_snap_days: int,
         calendar_seed=None,
-        H: int = 365,
+        T: int = 365,
     ):
         """Initialize FMCG Gymnasium environment.
 
@@ -27,7 +27,7 @@ class FMCGEnv(gym.Env):
             max_demand (int): the maximum daily demand considering all L products
             n_snap_days (int): number of SNAP days in a 30-day month.
             calendar_seed (int, optional): seed used for constructing SNAP calendar
-            H (int, optional): length of episode (defaults to 365),
+            T (int, optional): length of episode (defaults to 365),
         """
         # input validation
         assert p_min.shape == p_max.shape == p_diff.shape, (
@@ -40,7 +40,7 @@ class FMCGEnv(gym.Env):
         self.p_diff = p_diff
         # number of products
         self.L = p_min.shape[0]
-        self.H = H
+        self.T = T
         self.n_snap_days = n_snap_days
         # demand model parameters
         self.betas = betas
@@ -74,7 +74,7 @@ class FMCGEnv(gym.Env):
                 "demand": gym.spaces.Box(
                     low=0.0, high=1.0, shape=(self.L,), dtype=np.float32
                 ),
-                "t": gym.spaces.Discrete(self.H),
+                "t": gym.spaces.Discrete(self.T),
                 "sensitive_attr": gym.spaces.Discrete(2),
             }
         )
@@ -148,7 +148,7 @@ class FMCGEnv(gym.Env):
         self._demand = np.clip(demand_t, 0.0, self._max_demand)
 
         # Check if episode ended
-        terminated = self._t == (self.H - 1)
+        terminated = self._t == (self.T - 1)
 
         # Update time step
         if not terminated:
