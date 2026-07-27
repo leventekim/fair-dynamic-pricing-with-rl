@@ -159,7 +159,7 @@ class FMCGEnv(gym.Env):
         truncated = False
 
         # Reward is the obtained revenue
-        reward = p @ self._demand
+        reward = self._get_reward(p, self._demand)
 
         observation = self._get_obs()
         info = self._get_info()
@@ -245,3 +245,8 @@ class FMCGEnv(gym.Env):
 
     def _t_to_sens_attr(self, t):
         return self.mask[(np.asarray(t)) % 30].astype(int)
+
+    def _get_reward(self, p, d):
+        """ Returns reward.
+        """
+        return p @ d
