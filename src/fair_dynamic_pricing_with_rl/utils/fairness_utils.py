@@ -1,14 +1,13 @@
 import numpy as np
 
 
-def compute_jains_index(action_hist, groups, rew, p_min, p_diff):
+def compute_jains_index(action_hist, groups, p_min, p_diff):
     """
     Compute Jain's fairness index across sensitive-attribute (SNAP-proxied) groups.
 
     Args:
         action_hist (np.ndarray): raw action indices taken by the policy (T,K,L)
         groups (np.ndarray): sensitive attribute labels (0/1) (T,K)
-        rew (np.ndarray): realized rewards (T,K)
         p_min (np.ndarray): minimum prices (L)
         p_diff (np.ndarray) price granularity (L)
 
