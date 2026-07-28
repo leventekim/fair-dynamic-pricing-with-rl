@@ -13,8 +13,8 @@ class FMCGEnv(gym.Env):
         noise_range: int,
         max_demand: int,
         n_snap_days: int,
-        calendar_seed=None,
-        T: int = 365,
+        calendar_seed: Optional[int] = None,
+        T: Optional[int] = 365,
     ):
         """Initialize FMCG Gymnasium environment.
 
@@ -63,7 +63,7 @@ class FMCGEnv(gym.Env):
         ###
 
         # Using -1 as "uninitialized" state
-        self._demand = -1.0 * np.ones((self.L))
+        self._demand = -1.0 * np.ones(self.L)
         self._t = -1
         self._sensitive_attr = -1
 
@@ -136,7 +136,7 @@ class FMCGEnv(gym.Env):
 
         return observation, info
 
-    def step(self, action):
+    def step(self, action: np.ndarray):
         """Execute one timestep within the environment.
 
         Args:
@@ -194,14 +194,21 @@ class FMCGEnv(gym.Env):
         """Placeholder method for aiding debugging"""
         return {}
 
-    def _action_to_price(self, actions):
+    def _action_to_price(
+        self,
+        actions: np.ndarray,
+    ):
         """Map action numbers to actual price points."""
         # rounding guards against floating point inconsistencies
         prices = np.round(self.p_min + actions * self.p_diff, 10)
 
         return prices
 
-    def _demand_model(self, prices, demand_t_1):
+    def _demand_model(
+        self,
+        prices: np.ndarray,
+        demand_t_1: np.ndarray,
+    ):
         """Returns demand vector from price vector from estimated demand model.
 
         Args:
@@ -252,9 +259,30 @@ class FMCGEnv(gym.Env):
         n_steps = (self.p_max - self.p_min) / self.p_diff
         return (np.round(n_steps) + 1).astype(int)
 
-    def _t_to_sens_attr(self, t):
+    def _t_to_sens_attr(
+        self,
+        t: int,
+    ):
+        """Returns the sensitive attribute at t
+        Args:
+            t (int): time step index
+
+        Returns
+            self.mask[(np.asarray(t)) % 30].astype(int) (t): sensitive attribute at t (0/1)
+        """
         return self.mask[(np.asarray(t)) % 30].astype(int)
 
-    def _get_reward(self, p, d):
-        """Returns reward."""
+    def _get_reward(
+        self,
+        p: np.ndarray,
+        d: np.ndarray,
+    ):
+        """Returns reward by multiplying the demand and price vectors
+        Args:
+            p (np.ndarray): price vector (L)
+            d (np.ndarray): demand vector (L)
+
+        Returns:
+            p @ d (np.ndarray): revenue from given price and demand vectors
+        """
         return p @ d
