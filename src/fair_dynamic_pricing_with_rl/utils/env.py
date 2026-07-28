@@ -104,21 +104,29 @@ class FMCGEnv(gym.Env):
         Returns:
             tuple: (observation, info) for the initial state
         """
-        # IMPORTANT: Must call this first to seed the random number generator
+        # seeding the random number generator
         super().reset(seed=seed)
 
+        ### INITIALIZATION
         # At the start of the episode t = 0
         self._t = 0
 
         # get initial sensitive attribute
         self._sensitive_attr = self._t_to_sens_attr(self._t)
 
+        # action history
+        self.action_history = np.zeros((self.T, self.L))
+
+        ### INITIAL DEMAND
         # At time point 0 the demand is for a random price vector
         init_price = self._action_to_price(
             self.np_random.integers(low=0, high=self.action_space.nvec, size=self.L)
         )
-        # during initialization zero demand at t-1 is assumed
+        # during initialization it is assumed that d_t = d_{t-1}
+        # therefore: d_t = ... + beta d_{t}
+        # that implies d_t = ... / (1-beta)
         self._demand = self._demand_model(init_price, np.zeros((self.L)))
+        self._demand = self._demand / (1 - self.betas[self._sensitive_attr][-1, :])
 
         # clip demand to sensible range
         self._demand = np.clip(self._demand, 0.0, self._max_demand)
@@ -137,8 +145,9 @@ class FMCGEnv(gym.Env):
         Returns:
             tuple: (observation, reward, terminated, truncated, info)
         """
-        # Map the discrete action to a price
+        # Map the discrete action to a price and store it in history
         p = self._action_to_price(action)
+        self.action_history[self._t, :] = action
 
         # Observe demand based on core state and noise
         demand_t = self._demand_model(p, self._demand) + self.np_random.integers(
@@ -247,6 +256,5 @@ class FMCGEnv(gym.Env):
         return self.mask[(np.asarray(t)) % 30].astype(int)
 
     def _get_reward(self, p, d):
-        """ Returns reward.
-        """
+        """Returns reward."""
         return p @ d
