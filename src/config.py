@@ -33,20 +33,23 @@ PPO_HYPERPARAMS = {
     "clip_range": 0.2,  # default
     "seed": 42,
 }
-PPO_WARMUP_NR_EPISODES = 6000
+PPO_WARMUP_NR_EPISODES = 1500
 
 ###
 # EXPERIMENT 1 PARAMETERS
 ###
 
-RANDOM_PROBS_LIST = [0.0,0.5,0.7,1.0]
+RANDOM_PROBS_LIST = [i*(1/9) for i in range(10)]
 
 ###
 # EXPERIMENT 2 PARAMETERS
 ###
 
-FAIRNESS_WEIGHTS_LIST = [1.0, 0.7, 0.5, 0.0]
+NUM_INITIAL_RUNS = 100
+FAIRNESS_WEIGHTS_LIST = [i*(1/9) for i in range(10)]
 
 ###
 # EXPERIMENT 3 PARAMETERS
 ###
+
+RANDOM_SENS_PROBS_LIST = [i*(1/9) for i in range(10)]
