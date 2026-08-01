@@ -14,7 +14,7 @@ class FMCGEnv(gym.Env):
         max_demand: int,
         n_snap_days: int,
         calendar_seed: Optional[int] = None,
-        T: Optional[int] = 365,
+        T: Optional[int] = 60,
     ):
         """Initialize FMCG Gymnasium environment.
 
