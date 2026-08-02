@@ -24,7 +24,7 @@ CALENDAR_SEED = 42
 NOISE_RANGE = 1
 ENV_SEED = 42
 # num. of episodes is added to have no overlap between seeds
-SEED_LIST = [1024, 1024 + K, 1024 + 2*K]
+SEED_LIST = [1024, 1024 + K, 1024 + 2 * K]
 
 # PPO hyperparameters
 PPO_HYPERPARAMS = {
@@ -35,28 +35,21 @@ PPO_HYPERPARAMS = {
 }
 PPO_TRAINING_EPISODES = 15000
 
-# A2C hyperparameters from Kavoosi et al.
-A2C_HYPERPARAMS = {
-    "learning_rate": 0.0001,
-    "gamma": 0.99,
-    "use_rms_prop": False
-}
-
 ###
 # EXPERIMENT 1 PARAMETERS
 ###
 
-RANDOM_PROBS_LIST = [i*(1/9) for i in range(10)]
+RANDOM_PROBS_LIST = [i * (1 / 9) for i in range(10)]
 
 ###
 # EXPERIMENT 2 PARAMETERS
 ###
 
 NUM_INITIAL_RUNS = 100
-FAIRNESS_WEIGHTS_LIST = [i*(1/9) for i in range(10)]
+FAIRNESS_WEIGHTS_LIST = [i * (1 / 9) for i in range(10)]
 
 ###
 # EXPERIMENT 3 PARAMETERS
 ###
 
-RANDOM_SENS_PROBS_LIST = [i*(1/9) for i in range(10)]
+RANDOM_SENS_PROBS_LIST = [i * (1 / 9) for i in range(10)]
