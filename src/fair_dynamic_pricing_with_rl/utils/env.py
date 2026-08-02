@@ -27,7 +27,7 @@ class FMCGEnv(gym.Env):
             max_demand (int): the maximum daily demand considering all L products
             n_snap_days (int): number of SNAP days in a 30-day month.
             calendar_seed (int, optional): seed used for constructing SNAP calendar
-            T (int, optional): length of episode (defaults to 365),
+            T (int, optional): length of episode (defaults to 60),
         """
         # input validation
         assert p_min.shape == p_max.shape == p_diff.shape, (

@@ -43,11 +43,7 @@ class DemandModelEstimator:
         # get max_demand
         max_demand = np.max(self.pq["quantity"])
 
-        # get historical max. revenue
-        self.pq["revenue"] = self.pq["quantity"] * self.pq["sell_price"]
-        max_daily_revenue = np.max(self.pq.groupby(by="d")["revenue"].mean())
-
-        return (p_mins, p_maxes, p_diffs, betas, max_demand, max_daily_revenue)
+        return (p_mins, p_maxes, p_diffs, betas, max_demand)
 
     def _estimate_demand_model(self, df, product_list: list = PRODUCT_LIST):
         """Quantity on log prices (second-order) plus 7-day reference-price gaps."""
@@ -109,6 +105,7 @@ class DemandModelEstimator:
 
         merged_df = self.calendar.merge(self.prices, how="left", on="wm_yr_wk")
         merged_df = merged_df[merged_df.item_id.isin(self.product_list)]
+        merged_df = merged_df.loc[merged_df.store_id.str.startswith(self.chosen_state)]
 
         # obtain weekly prices
         p = (

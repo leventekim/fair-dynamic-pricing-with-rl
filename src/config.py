@@ -5,7 +5,7 @@ import numpy as np
 # STANDARD PARAMETERS
 ###
 
-FIGURES_PATH = "C:\\Users\\Kim Levente\\Documents\\01-projects\\research-project\\01_milestones\\03_final_report\\figures\\"
+FIGURES_PATH = "/Users/kisslucasara/Documents/levi-research-project/figures/"
 
 # demand model parameters
 DEMAND_MODEL_PRICE_GRANULARITY = 0.001
@@ -24,7 +24,7 @@ CALENDAR_SEED = 42
 NOISE_RANGE = 1
 ENV_SEED = 42
 # num. of episodes is added to have no overlap between seeds
-SEED_LIST = [1024, 1024+K, 1024+2*K, 1024+3*K, 1024+4*K]
+SEED_LIST = [1024, 1024 + K, 1024 + 2*K]
 
 # PPO hyperparameters
 PPO_HYPERPARAMS = {
@@ -46,7 +46,7 @@ A2C_HYPERPARAMS = {
 # EXPERIMENT 1 PARAMETERS
 ###
 
-RANDOM_PROBS_LIST = [0.0,0.2,0.5,0.7,1.0]
+RANDOM_PROBS_LIST = [i*(1/9) for i in range(10)]
 
 ###
 # EXPERIMENT 2 PARAMETERS

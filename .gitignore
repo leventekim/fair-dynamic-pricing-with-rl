@@ -5,6 +5,9 @@
 # intermediate output
 *.npy
 
+# figures
+*.pdf
+
 # UV-related files
 .venv/
 __pycache__/
