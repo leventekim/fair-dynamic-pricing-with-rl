@@ -1,11 +1,10 @@
 import numpy as np
 
-
 ###
 # STANDARD PARAMETERS
 ###
 
-FIGURES_PATH = "/Users/kisslucasara/Documents/levi-research-project/figures/"
+FIGURES_PATH = "C:\\Users\\Kim Levente\\Documents\\01-projects\\research-project\\01_milestones\\03_final_report\\figures\\"
 
 # demand model parameters
 DEMAND_MODEL_PRICE_GRANULARITY = 0.001
