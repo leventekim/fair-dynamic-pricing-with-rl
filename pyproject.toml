@@ -1,7 +1,8 @@
 [project]
 name = "fair-dynamic-pricing-with-rl"
-licence = "CC-BY-4.0"
-licence-files = ["LICENCE"]
+authors = [
+  {name = "Levente Kim", email = "kimlevente@gmail.com"}
+]
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
@@ -18,3 +19,5 @@ dependencies = [
     "tqdm>=4.70.0",
     "typing>=3.10.0.0",
 ]
+licence = "CC-BY-4.0"
+licence-files = ["LICENCE"]
