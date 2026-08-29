@@ -29,3 +29,7 @@ The orchestrator codes in the `src` folder should be ran in the order as specifi
 5. 04_compare_experiments.ipynb (Comparison of experiments for the final report)
 
 **Runtime**: approx. 12-14 hours on a Macbook Pro, M3 Pro with macOS 26.3.
+
+## Replicability of Supplementary Material Graphs
+
+Supplementary Material graphs for exploratory data analysis are replicable by running the `src/00_run_eda.ipynb` script. The graphs of the Hyperparameter Tuning sub-section are replicable by setting ent_coef to 0.05 and re-running the experiments. (steps 2-4) Finally, additional Experiment 2 plots can be recreated by the corresponding scripts in the `notebooks/` directory with a suffix indicating the change in the fairness reward component. 
