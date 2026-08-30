@@ -31,6 +31,7 @@ PPO_HYPERPARAMS = {
     "batch_size": 64,  # default
     "clip_range": 0.2,  # default
     "seed": 42,
+    "ent_coef": 0.01
 }
 PPO_TRAINING_EPISODES = 15000
 

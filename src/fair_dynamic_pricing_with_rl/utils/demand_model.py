@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
 
-from .config import PRODUCT_LIST, CHOSEN_STATE
+from .config import CHOSEN_STATE, PRODUCT_LIST
 
 
 class DemandModelEstimator:
@@ -16,6 +16,18 @@ class DemandModelEstimator:
         chosen_state: str = CHOSEN_STATE,
         verbose: bool = False,
     ):
+        """Initialize demand model estimator.
+
+        Args:
+            unit_sales_df (pd.DataFrame): table containing information on sales for store-day-product level
+            prices_df (pd.DataFrame): table containing prices on week-store-product level
+            calendar_df (pd.DataFrame): table containing information on sensitive attribute
+            price_granularity (float): price granularity used for price ranges
+            product_list (list): list of product IDs to model
+            chosen_state (str): chosen state from ["WI", "TX", "CA"]
+            verbose (bool, optional): If True, prints OLS summary and price range. (defaults to False)
+        """
+
         # store base data and parameters
         self.unit_sales = unit_sales_df
         self.prices = prices_df
@@ -27,6 +39,16 @@ class DemandModelEstimator:
         self.verbose = verbose
 
     def run_pipeline(self):
+        """Runs the demand estimation pipeline.
+
+        Returns:
+            p_mins (np.ndarray): price minimums (L,)
+            p_maxes (np.ndarray): price maximums (L,)
+            p_diffs (np.ndarray): price granularity (L,)
+            betas (list): estimated parameters for different sensitive attribute values
+            max_demand (float): max observed historical demand among the L products
+        """
+
         # create dataframes with price-demand information differently
         # for SNAP and non-SNAP households
         dfs = self._create_price_demand_data()
@@ -46,7 +68,16 @@ class DemandModelEstimator:
         return (p_mins, p_maxes, p_diffs, betas, max_demand)
 
     def _estimate_demand_model(self, df, product_list: list = PRODUCT_LIST):
-        """Quantity on log prices (second-order) plus 7-day reference-price gaps."""
+        """Estimate model of quantity on log prices (second-order) plus 7-day reference-price gaps using OLS.
+
+        Args:
+            df (pd.DataFrame) table containing price and sales data on product-day granularity
+            product_list (list) list of product IDs to model (defaults to PRODUCT_LIST)
+
+        Returns:
+            pd.DataFrame(params): estimated parameters
+            results_dict (dict): fitted smf.ols objects with keys of product IDs
+        """
 
         log_p = self._to_day_index(
             df.pivot_table(
@@ -76,7 +107,7 @@ class DemandModelEstimator:
         X = X.join(q[lag_cols])
         params, results_dict = {}, {}
 
-        for product in self.product_list:
+        for product in product_list:
             if self.verbose:
                 print(f"--- Fitting demand model for {product} ---")
             data = X.copy()
@@ -92,7 +123,13 @@ class DemandModelEstimator:
         return pd.DataFrame(params), results_dict
 
     def _create_price_demand_data(self):
-        # get product-level demand for FOODS per day
+        """ From raw data tables create price - demand table needed for model estimation.
+
+        Returns:
+            [pq_nonsnap, pq_snap]: list of pd.DataFrames with price-demand information on product-day level.
+        """
+
+        # Get product-level demand for FOODS per day
         # from EDA, the prices were founds to be state-dependent
         foods_demand = self.unit_sales[self.unit_sales.state_id == self.chosen_state]
         foods_demand = foods_demand.loc[
@@ -140,7 +177,14 @@ class DemandModelEstimator:
         return [pq_nonsnap, pq_snap]
 
     def _get_price_range(self):
-        # get min. and max. prices of products
+        """Get min. and max. prices of products.
+
+        Returns:
+            p_mins (np.ndarray): price minimums (L,)
+            p_maxes (np.ndarray): price maximums (L,)
+            p_diffs (np.ndarray): price granularity (L,)
+        """
+
         p_mins = np.zeros((len(self.product_list)))
         p_maxes = np.zeros((len(self.product_list)))
 
@@ -163,6 +207,7 @@ class DemandModelEstimator:
         return (p_mins, p_maxes, p_diffs)
 
     def _to_day_index(self, frame):
-        """d_1, d_2, ... -> integer index, numerically sorted. No reindex."""
+        """ Utility function: d_1, d_2, ... to integer index numerically sorted.
+        """
         day = frame.index.str.extract(r"(\d+)", expand=False).astype(int)
         return frame.set_axis(pd.Index(day, name="day")).sort_index()

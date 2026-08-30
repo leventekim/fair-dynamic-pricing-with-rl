@@ -1,6 +1,7 @@
-import numpy as np
-import gymnasium as gym
 from typing import Optional
+
+import gymnasium as gym
+import numpy as np
 
 
 class FMCGEnv(gym.Env):
